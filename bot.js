@@ -1,19 +1,8 @@
-// TODO: DELETE TOKEN WHEN DONE WITH TESTING
-// TODO: DELETE TOKEN WHEN DONE WITH TESTING
-// TODO: DELETE TOKEN WHEN DONE WITH TESTING
-// TODO: DELETE TOKEN WHEN DONE WITH TESTING
-// TODO: DELETE TOKEN WHEN DONE WITH TESTING
-// TODO: DELETE TOKEN WHEN DONE WITH TESTING
-// TODO: DELETE TOKEN WHEN DONE WITH TESTING
-// TODO: DELETE TOKEN WHEN DONE WITH TESTING
-// TODO: DELETE TOKEN WHEN DONE WITH TESTING
-// TODO: DELETE TOKEN WHEN DONE WITH TESTING
-// TODO: DELETE TOKEN WHEN DONE WITH TESTING
 const Discord = require('discord.js');
 const Sequelize = require('sequelize');
 let config;
 const fs = require('fs');
-fs.exists('./config.json') ? config = require('config.json') : config = {prefix: '$'};
+const config = require('config.json');
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 client.botCommands = new Discord.Collection();
@@ -180,7 +169,7 @@ client.on('guildMemberAdd', async (member) => {
 });
 // reeeeeeeeeeeeeeee my key
 // client.login(process.env.BOT_TOKEN);
-client.login("NDkxNTI3NDI3NDgzNTAwNTQ3.DswLhQ.Vd3BGKeH3ikbiRD9RsTRG_3xCMw");
+client.login(config.token);
 client.on('raw', event => {
     if (event.t === 'MESSAGE_REACTION_ADD' || event.t === 'MESSAGE_REACTION_REMOVE') {
         if (event.d.channel_id === welcomeId) {
