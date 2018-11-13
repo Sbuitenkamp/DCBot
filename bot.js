@@ -623,17 +623,9 @@ async function handleMessage(message, newMessage) {
     }
 
 
-    if (message.member.counter !== 0) {
-        setTimeout(() => {
-            message.member.counter = 0;
-        }, 1500);
-    }
+    if (message.member.counter !== 0) setTimeout(() => message.member.counter = 0, 1500);
 
-    if (message.member.count !== 0) {
-        setTimeout(() => {
-            message.member.count = 0;
-        }, 60000);
-    }
+    if (message.member.count !== 0) setTimeout(() => message.member.count = 0, 60000);
 }
 
 // TODO: make ww2 minigame (on hold)
