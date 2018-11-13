@@ -1,8 +1,7 @@
 const Discord = require('discord.js');
 const Sequelize = require('sequelize');
-let config;
 const fs = require('fs');
-const config = require('config.json');
+const config = require('./config.json');
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 client.botCommands = new Discord.Collection();
@@ -25,8 +24,8 @@ warCommandFiles.forEach(file => {
     client.warCommands.set(command.name, command);
 });
 const tables = client.botCommands.get('dbinit').execute(Sequelize);
-const welcomeId = '511802733381025804';
-const shitpostId = '511802913245495324';
+const welcomeId = '511849121632616449';
+const shitpostId = '511849703357546497';
 const wwId = '502110242952314880';
 let warCommands = '';
 let normalCommands = '';
@@ -41,7 +40,7 @@ let argument = '';
 let spetsnazPoints = 0;
 let ssPoints = 0;
 let spetsnazMembers = 0;
-let ssMembers = 0;
+let ssMembers = 0;+
 client.commands.forEach(command => {
     if (command.subtype !== 'role' && command.type === 'admin') {
         adminCommands += `${command.name}: ${command.description} \n\n`;
@@ -98,7 +97,7 @@ Rules:
  1. Keep messages to their respective channels.
  2. Shadew is always right
  3. If Shadew isn't right rule 2 takes immediate effect!
- 4. Unless it's relevant to the conversations, keep images to <#${shitpostId}> or <#511802882786459648>
+ 4. Unless it's relevant to the conversations, keep images to <#${shitpostId}> or <#511849682218123265>
  4. No spamming, or annoying behaviour
  5. @everyone or @here only for mods.
  6. Certified Normies are mods..... please make fun of them.
@@ -114,7 +113,7 @@ Roles:
  Spetsnaz. USSR Comrades
  Die SS. Nazis
  
- Here is an invite link so you can invite your friends https://discord.gg/THumRTB
+ Here is an invite link so you can invite your friends https://discord.gg/EThc2TA
 
  We also have gaming roles, check below to get them.
  
@@ -168,7 +167,6 @@ client.on('guildMemberAdd', async (member) => {
     }
 });
 // reeeeeeeeeeeeeeee my key
-// client.login(process.env.BOT_TOKEN);
 client.login(config.token);
 client.on('raw', event => {
     if (event.t === 'MESSAGE_REACTION_ADD' || event.t === 'MESSAGE_REACTION_REMOVE') {
@@ -516,18 +514,20 @@ async function handleMessage(message, newMessage) {
 
         // owner only commands (placed here because the try-catch hijacks the code afterwards)
         if (message.member.roles.find(r => r.name.toLowerCase() === 'supreme one')) {
+            const channel = await message.guild.channels.get(welcomeId);
             switch (cmd.toLowerCase()) {
                 case 'edit':
-                    // const channel2 = await message.guild.channels.get('502364899125755914');
-                    const msgToEdit = await message.guild.channels.get(welcomeId).fetchMessage('511816162317697034');
-                    // const msgToEdit = await channel2.fetchMessage('502750718479040512');
+                    const msgToEdit = await channel.fetchMessage('511816162317697034');
                     msgToEdit.edit(welcome);
                     return;
                 case 'write':
-                    const channel = await message.guild.channels.get(welcomeId);
                     channel.send(welcome);
                     return;
+                case 'writereact':
+                    channel.send('Click here to gain **"entry"** to the server.').then(m => m.react(':entry:494753443164979200'))
+                    return;
             }
+
         }
         // use to log the every chat message (delete proof)
         console.log(`${member.displayName} used: ${cmd} | ${argument}`);
@@ -583,7 +583,7 @@ async function handleMessage(message, newMessage) {
 
     } else if (!permitted && content.length >= 20 && (content.length - content.replace(/[A-Z]/g, '').length) > (content.length / 3)) {
         console.log(`${message.content} | caps remove`);
-        channel.guild.channels.get('511803031420141578').send(removeEmbed.addField('Member', member).addField('Content', message.content).addField('Reason', 'spamming caps'));
+        channel.guild.channels.get('511849814112075776').send(removeEmbed.addField('Member', member).addField('Content', message.content).addField('Reason', 'spamming caps'));
         message.delete();
         channel.send('Woah woah watch the caps lad, else I will have to quickscope yer ass!');
         message.member.count++;
