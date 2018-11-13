@@ -1,0 +1,16 @@
+{
+  "name": "ShadBot",
+  "version": "1.0.0",
+  "description": "Bot for Memes of the highest order discord server",
+  "main": "bot.js",
+  "author": "Shadew",
+  "dependencies": {
+    "discord.js": "github:discordjs/discord.js#11.4-dev",
+    "npm": "^6.4.1",
+    "sequelize": "^4.39.0",
+    "sqlite3": "^4.0.2"
+  },
+  "scripts": {
+    "start": "bot.js"
+  }
+}
