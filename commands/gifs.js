@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const shitpostId = '490857550921859084';
 module.exports = {
     name: 'gifs',
     description: 'gets all displayable gifs',
@@ -9,7 +8,7 @@ module.exports = {
     init: function (token) {
         this.syntax = token + this.syntax;
     },
-    execute(message) {
+    execute(message, shitpostId) {
         const shitpostChannel = message.channel.id === shitpostId;
         if (shitpostChannel) {
             let fileList = '';

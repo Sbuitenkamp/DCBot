@@ -261,7 +261,7 @@ client.on('raw', event => {
 client.on('message', message => {
     handleMessage(message, false);
 });
-client.on("messageUpdate", (oldMessage, newMessage) => {
+client.on('messageUpdate', (oldMessage, newMessage) => {
     handleMessage(newMessage, true);
 });
 process.on('unhandledRejection', e => {
@@ -286,6 +286,26 @@ client.on('error', error => {
             break;
     }
 });
+async function warn (person) {
+    try {
+        await warnings.findOrCreate({where: {id: person.id}}).then(warned => {
+            console.log(warned[1]);
+            if (!warned[1]) {
+                warned[0].increment('warned');
+            }
+            const emb = new Discord.RichEmbed()
+                .setTitle('This person has been warned:')
+                .setColor('09ad81')
+                .addField(`${person.displayName}`, `
+Warnings: ${warned[0].dataValues.warned}
+                `);
+            person.guild.channels.get('512244472080367617').send(emb);
+            return console.log(`${person} has been warned.`);
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
 function battle(collected, embed, battlefield) {
     embed.channel.send('Time is up! The battle will now start');
     for (let memb of collected) {
@@ -355,7 +375,7 @@ async function handleRoles(message, role, add, update, emote, channelAmount, cha
                     name: role.name,
                     mentionable: true
                 }).then(r => {
-                    const perms = [{id: guild.id, deny: ['VIEW_CHANNEL']}, {id: r.id, allow: ['VIEW_CHANNEL']}];
+                    const perms = [{id: guild.id, deny: ['VIEW_CHANNEL']}, {id: r.id, allow: ['VIEW_CHANNEL', 'ATTACH_FILES']}];
                     guild.createChannel(r.name, {type: 'category'}, perms).then(category => {
                         guild.createChannel(role.name.replace(' ', '-'), {type: 'text', parent: category, permissionOverwrites: perms}).catch(e => console.log(e));
                         guild.createChannel(role.name + ' General Discussion/Talk', {type: 'voice', parent: category, permissionOverwrites: perms}).then(channel => channel.setParent(category)).catch(e => console.log(e));
@@ -541,12 +561,14 @@ async function handleMessage(message, newMessage) {
                 command.execute(message, commands);
             } else if (command.type === 'syntax') {
                 command.execute(message, syntaxes);
+            } else if (command.type === 'shitpost') {
+                command.execute(message, shitpostId, permitted, notPermitted, args, argument);
             } else if (command.subtype === 'mute') {
                 command.execute(message, args, permitted, notPermitted, handleMuting, handleUnmuting);
             } else if (command.subtype === 'role') {
                 command.execute(message, notPermitted, argument, handleRoles);
             } else if (command.subtype === 'db') {
-                command.execute(message, permitted, notPermitted, null, warnings, Discord, handleMuting);
+                command.execute(message, permitted, notPermitted, null, warnings, Discord, warn);
             } else {
                 command.execute(message, permitted, notPermitted, args, argument);
             }

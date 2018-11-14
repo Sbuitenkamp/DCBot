@@ -1,5 +1,4 @@
 const fs = require('fs');
-const shitpostId = '490857550921859084';
 module.exports = {
     name: 'gif',
     description: 'post gif (only for people with permission to post gifs!)',
@@ -8,7 +7,7 @@ module.exports = {
     init: function (token) {
         this.syntax = token + this.syntax;
     },
-    execute(message, permitted, notPermitted, args, argument) {
+    execute(message, shitpostId, permitted, notPermitted, args, argument) {
         const shitpostChannel = message.channel.id === shitpostId;
         if (shitpostChannel || permitted) {
             if (argument !== '') {
