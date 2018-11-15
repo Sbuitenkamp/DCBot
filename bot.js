@@ -113,7 +113,7 @@ Roles:
  Spetsnaz. USSR Comrades
  Die SS. Nazis
  
- Here is an invite link so you can invite your friends https://discord.gg/EThc2TA
+ Here is an invite link so you can invite your friends https://discord.gg/HZDmuVQ
 
  We also have gaming roles, check below to get them.
  
@@ -286,26 +286,6 @@ client.on('error', error => {
             break;
     }
 });
-async function warn (person) {
-    try {
-        await warnings.findOrCreate({where: {id: person.id}}).then(warned => {
-            console.log(warned[1]);
-            if (!warned[1]) {
-                warned[0].increment('warned');
-            }
-            const emb = new Discord.RichEmbed()
-                .setTitle('This person has been warned:')
-                .setColor('09ad81')
-                .addField(`${person.displayName}`, `
-Warnings: ${warned[0].dataValues.warned}
-                `);
-            person.guild.channels.get('512244472080367617').send(emb);
-            return console.log(`${person} has been warned.`);
-        });
-    } catch (e) {
-        console.log(e);
-    }
-}
 function battle(collected, embed, battlefield) {
     embed.channel.send('Time is up! The battle will now start');
     for (let memb of collected) {
@@ -345,24 +325,6 @@ function generateMessages(rolesObj) {
     rolesObj.forEach(role => {messages.push(`${role.message1} **"${role.name}"** ${role.message2}`);});
     return messages;
 }
-function unmuteInterval(message, person, flag) {
-    setInterval(async () => {
-        if (flag) return;
-        let mutedPeople = await muted.findAll({attributes: ['id', 'muted', 'muteTime']});
-        for (let i = 0; i < mutedPeople.length; i++) {
-            if (mutedPeople[i].dataValues.muted) {
-                if (mutedPeople[i].dataValues.muteTime <= Math.round(new Date().getTime() / 1000)) {
-                    const affectedRows = await muted.update({muted: false, muteTime: 0}, {where: {id: mutedPeople[i].dataValues.id}});
-                    if (affectedRows < 0) return message.channel.send(`Could not save ${person}'s unmuted status...`);
-                    handleMuting(message, person, false);
-                    mutedPeople = await muted.findAll({attributes: ['id','muted', 'muteTime']});
-                }
-            } else if (!mutedPeople[i].dataValues.muted && i + 1 >= mutedPeople.length) {
-                return flag = true;
-            }
-        }
-    }, 5000);
-}
 async function handleRoles(message, role, add, update, emote, channelAmount, channelSize) {
     const guild = message.guild;
     let channel = message.guild.channels.get(welcomeId);
@@ -378,7 +340,7 @@ async function handleRoles(message, role, add, update, emote, channelAmount, cha
                     const perms = [{id: guild.id, deny: ['VIEW_CHANNEL']}, {id: r.id, allow: ['VIEW_CHANNEL', 'ATTACH_FILES']}];
                     guild.createChannel(r.name, {type: 'category'}, perms).then(category => {
                         guild.createChannel(role.name.replace(' ', '-'), {type: 'text', parent: category, permissionOverwrites: perms}).catch(e => console.log(e));
-                        guild.createChannel(role.name + ' General Discussion/Talk', {type: 'voice', parent: category, permissionOverwrites: perms}).then(channel => channel.setParent(category)).catch(e => console.log(e));
+                        guild.createChannel(role.name + ' General Discussion/Talk', {type: 'voice', parent: category, permissionOverwrites: perms}).catch(e => console.log(e));
                         for (let i = 0; i < channelAmount; i++) {
                             guild.createChannel(role.name, {type: 'voice', userLimit: channelSize, parent: category, permissionOverwrites: perms}).catch(e => console.log(e));
                         }
@@ -447,26 +409,60 @@ async function handleRoles(message, role, add, update, emote, channelAmount, cha
         }
     }
 }
-async function handleUnmuting(message, person, end, unmute, flag) {
-    const isMuted = await muted.findOne({where: {id: person.id}});
-    if (!unmute) {
-        if (isMuted) {
-            const affectedRows = await muted.update({muted: true, muteTime: end}, {where: {id: person.id}});
-            if (affectedRows < 0) return message.channel.send(`Could not save ${person}'s mute time...`);
-        } else {
-            const makeRow = await muted.create({
-                id: person.id,
-                muted: true,
-                muteTime: end
-            });
-            if (makeRow === undefined) return message.channel.send(`Could not save ${person}'s mute time...`);
-        }
-    } else if (unmute) {
-        if (!isMuted) return;
-        const affectedRows = await muted.update({muted: false, muteTime: end}, {where: {id: person.id}});
-        if (affectedRows < 0) return message.channel.send(`Could not save ${person}'s unmuted status...`);
+async function warn (person) {
+    try {
+        await warnings.findOrCreate({where: {id: person.id}}).then(warned => {
+            console.log(warned[1]);
+            if (!warned[1]) {
+                warned[0].increment('warned');
+            }
+            const emb = new Discord.RichEmbed()
+                .setTitle('This person has been warned:')
+                .setColor('09ad81')
+                .addField(`${person.displayName}`, `
+Warnings: ${warned[0].dataValues.warned}
+                `);
+            person.guild.channels.get('512244472080367617').send(emb);
+            return console.log(`${person} has been warned.`);
+        });
+    } catch (e) {
+        console.log(e);
     }
-    unmuteInterval(message, person, flag);
+}
+function unmuteInterval(message, person, flag) {
+    setInterval(async () => {
+        if (flag) return;
+        let mutedPeople = await muted.findAll({attributes: ['id', 'muted', 'muteTime']});
+        for (let i = 0; i < mutedPeople.length; i++) {
+            if (mutedPeople[i].dataValues.muted) {
+                if (mutedPeople[i].dataValues.muteTime <= Math.round(new Date().getTime() / 1000)) {
+                    const affectedRows = await muted.update({muted: false, muteTime: 0}, {where: {id: mutedPeople[i].dataValues.id}});
+                    if (affectedRows < 0) return message.channel.send(`Could not save ${person}'s unmuted status...`);
+                    handleMuting(message, person, false);
+                    mutedPeople = await muted.findAll({attributes: ['id','muted', 'muteTime']});
+                }
+            } else if (!mutedPeople[i].dataValues.muted && i + 1 >= mutedPeople.length) {
+                return flag = true;
+            }
+        }
+    }, 5000);
+}
+function handleUnmuting(message, person, end, unmute, flag) {
+    muted.findOrCreate({where: {id: person.id}, defaults: {id: person.id, muted: false, muteTime: end}}).then(async result => {
+        if (!unmute) {
+            if (!result[1]) {
+                const affectedRows = await muted.update({muted: true, muteTime: end}, {where: {id: person.id}});
+                if (affectedRows < 0) return message.channel.send(`Could not save ${person}'s mute time...`);
+            } else {
+                if (!result[0]) return message.channel.send(`Could not save ${person}'s mute time...`);
+            }
+        } else if (unmute) {
+            if (!isMuted) return;
+            const affectedRows = await muted.update({muted: false, muteTime: end}, {where: {id: person.id}});
+            if (affectedRows < 0) return message.channel.send(`Could not save ${person}'s unmuted status...`);
+        }
+        unmuteInterval(message, person, flag);
+    });
 }
 async function handleMuting(message, person, muted) {
     if (muted) {
@@ -475,18 +471,15 @@ async function handleMuting(message, person, muted) {
         let index = memberRoles.indexOf('@everyone');
         if (index > -1) memberRoles.splice(index, 1);
         memberRoles = memberRoles.join(',');
-        const row = await roles.findOne({where: {id: person.id}});
-        if (row) {
-            const affectedRows = await warnings.update({roles: memberRoles}, {where: {id: person.id}});
-            if (affectedRows < 0) return message.channel.send(`Could not save ${person}'s roles...`);
-        } else {
-            const makeRow = await roles.create({
-                id: person.id,
-                roles: memberRoles
-            });
-            if (makeRow === undefined) return message.channel.send(`Could not save ${person}'s roles...`);
-        }
-        person.setRoles(role).then(message.channel.send(`Muted ${person}. Moderators can do $unmute <name> to unmute.`)).catch(console.error);
+        roles.findOrCreate({where: {id: person.id}, defaults: {id: person.id, roles: memberRoles}}).then(async result => {
+            if (!result[1]) {
+                const affectedRows = await warnings.update({roles: memberRoles}, {where: {id: person.id}});
+                if (affectedRows < 0) return message.channel.send(`Could not save ${person}'s roles...`);
+            } else {
+                if (!result[0]) return message.channel.send(`Could not save ${person}'s roles...`);
+            }
+            person.setRoles(role).then(message.channel.send(`Muted ${person}. Moderators can do $unmute <name> to unmute.`)).catch(console.error);
+        });
     } else {
         const result = await roles.findOne({where: {id: person.id}});
         const resultArray = result.roles.split(',');
@@ -494,13 +487,13 @@ async function handleMuting(message, person, muted) {
         resultArray.forEach(role => roleArray.push(message.guild.roles.find(r => r.name === role)));
         person.setRoles(roleArray).then(person.send('You have been unmuted.').catch(e => console.log(`${person} doesn't accept dms :/`)));
     }
- }
+}
 async function handleMessage(message, newMessage) {
     // bot doesn't reply to itself
     if (message.author.bot) return undefined;
     // don't respond to dms
     if (message.channel.type === 'dm') return undefined;
-    // creating properties for anti-spam
+    // creating own properties for member
     if (message.member.count === undefined) message.member.count = 0;
     if (message.member.counter === undefined) message.member.counter = 0;
     if (message.member.battleJoined === undefined) message.member.battleJoined = false;
@@ -537,14 +530,14 @@ async function handleMessage(message, newMessage) {
             const channel = await message.guild.channels.get(welcomeId);
             switch (cmd.toLowerCase()) {
                 case 'edit':
-                    const msgToEdit = await channel.fetchMessage('511816162317697034');
+                    const msgToEdit = await channel.fetchMessage('511860906486005771');
                     msgToEdit.edit(welcome);
                     return;
                 case 'write':
                     channel.send(welcome);
                     return;
                 case 'writereact':
-                    channel.send('Click here to gain **"entry"** to the server.').then(m => m.react(':entry:494753443164979200'))
+                    channel.send('Click here to gain **"entry"** to the server.').then(m => m.react(':entry:494753443164979200'));
                     return;
             }
 
@@ -581,7 +574,7 @@ async function handleMessage(message, newMessage) {
     } else if(message.content.startsWith(config.prefix) && message.channel.parentID === '502118162347589643') {
         // Bot will listen for messages that will start with the prefix
         // no commands used on the bot
-        if (message.mentions.users.first() === client.user) return message.member.send(`I am a neutral party chief.`).catch(console.log('No dms'));
+        if (message.mentions.users.first() === client.user) return message.member.send(`I am a neutral party chief.`).catch(e => console.log('No dms'));
         // delete old message on update
         if (newMessage && client.user.lastMessage !== null) client.user.lastMessage.delete(1);
         // make every word part of the arguments array
@@ -639,14 +632,11 @@ async function handleMessage(message, newMessage) {
         message.member.counter++;
         if (message.member.counter >= 4) {
             message.channel.send(`Hol up ${message.member}, I don't think you're supposed to send messages *that* fast`);
-            client.botCommands.get('warn').execute(message, message.member, warnings, handleMuting);
+            client.botCommands.get('warn').execute(message.member, warn);
             console.log(`${message.member} has been warned.`);
         }
     }
-
-
     if (message.member.counter !== 0) setTimeout(() => message.member.counter = 0, 1500);
-
     if (message.member.count !== 0) setTimeout(() => message.member.count = 0, 60000);
 }
 
