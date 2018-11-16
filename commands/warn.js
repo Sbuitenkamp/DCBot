@@ -1,13 +1,13 @@
 module.exports = {
     name: 'warn',
     description: 'warns user',
-    syntax: 'warn <@user>',
+    syntax: 'warn <@user> reason',
     type: 'admin',
     subtype: 'db',
     init: function (token) {
         this.syntax = token + this.syntax;
     },
-    async execute(message, permitted, notPermitted, person, warnings, ignore, warnHandler) {
+    async execute(message, permitted, notPermitted, person, warnings, ignoreThis, args, warnHandler) {
         if (permitted) {
             if (person === null) {
                 if (message.mentions.members !== undefined) {

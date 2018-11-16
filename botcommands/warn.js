@@ -1,6 +1,6 @@
 module.exports = {
     name: 'warn',
-    async execute(person, warningHandler) {
-        warningHandler(person)
+    async execute(person, warningHandler, reason) {
+        warningHandler(person, reason)
     }
 };

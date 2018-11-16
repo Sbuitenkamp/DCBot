@@ -40,7 +40,7 @@ let argument = '';
 let spetsnazPoints = 0;
 let ssPoints = 0;
 let spetsnazMembers = 0;
-let ssMembers = 0;+
+let ssMembers = 0;
 client.commands.forEach(command => {
     if (command.subtype !== 'role' && command.type === 'admin') {
         adminCommands += `${command.name}: ${command.description} \n\n`;
@@ -121,7 +121,7 @@ Roles:
   |
   |
  V
-`];
+`.trim()];
 const warResults = new Discord.RichEmbed()
     .setColor('09ad81')
     .setTitle('Current war statistics')
@@ -409,7 +409,7 @@ async function handleRoles(message, role, add, update, emote, channelAmount, cha
         }
     }
 }
-async function warn (person) {
+async function warn (person, reason) {
     try {
         await warnings.findOrCreate({where: {id: person.id}}).then(warned => {
             console.log(warned[1]);
@@ -464,7 +464,7 @@ function handleUnmuting(message, person, end, unmute, flag) {
         unmuteInterval(message, person, flag);
     });
 }
-async function handleMuting(message, person, muted) {
+async function handleMuting(message, person, muted, reason) {
     if (muted) {
         const role = [message.guild.roles.find(role => role.name === 'Shitposted in the wrong neighbourhood')];
         let memberRoles = person.roles.map(role => role.name);
@@ -478,7 +478,7 @@ async function handleMuting(message, person, muted) {
             } else {
                 if (!result[0]) return message.channel.send(`Could not save ${person}'s roles...`);
             }
-            person.setRoles(role).then(message.channel.send(`Muted ${person}. Moderators can do $unmute <name> to unmute.`)).catch(console.error);
+            person.setRoles(role).then(person.send(`You have been muted for ${reason}.`)).catch(console.error);
         });
     } else {
         const result = await roles.findOne({where: {id: person.id}});
@@ -561,7 +561,7 @@ async function handleMessage(message, newMessage) {
             } else if (command.subtype === 'role') {
                 command.execute(message, notPermitted, argument, handleRoles);
             } else if (command.subtype === 'db') {
-                command.execute(message, permitted, notPermitted, null, warnings, Discord, warn);
+                command.execute(message, permitted, notPermitted, null, warnings, Discord, args, warn);
             } else {
                 command.execute(message, permitted, notPermitted, args, argument);
             }
@@ -632,7 +632,7 @@ async function handleMessage(message, newMessage) {
         message.member.counter++;
         if (message.member.counter >= 4) {
             message.channel.send(`Hol up ${message.member}, I don't think you're supposed to send messages *that* fast`);
-            client.botCommands.get('warn').execute(message.member, warn);
+            client.botCommands.get('warn').execute(message.member, warn, 'Spamming messages');
             console.log(`${message.member} has been warned.`);
         }
     }
