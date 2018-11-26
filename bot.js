@@ -141,7 +141,7 @@ const warMembers = tables.warTables.warMembers;
 const warStats = tables.warTables.warStats;
 const arsenal = tables.warTables.arsenal;
 const bigGuns = tables.warTables.bigGuns;
-client.on('ready', () => {
+client.once('ready', () => {
     client.user.setPresence({
         status: 'online',
         game: { name: `the server | ${config.prefix}help for more info`, type: "WATCHING" }
@@ -490,9 +490,9 @@ async function handleMuting(message, person, muted, reason) {
 }
 async function handleMessage(message, newMessage) {
     // bot doesn't reply to itself
-    if (message.author.bot) return undefined;
+    if (message.author.bot) return;
     // don't respond to dms
-    if (message.channel.type === 'dm') return undefined;
+    if (!message.guild) return;
     // creating own properties for member
     if (message.member.count === undefined) message.member.count = 0;
     if (message.member.counter === undefined) message.member.counter = 0;
