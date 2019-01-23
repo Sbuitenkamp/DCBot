@@ -1,5 +1,5 @@
 const { Client, RichEmbed } = require('discord.js');
-const  { token } = require('config');
+const  { token } = require('./config.json');
 const client = new Client();
 // selects text thats inbetween **""**
 const roleAssignId = '537572393523216404';
