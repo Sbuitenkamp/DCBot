@@ -67,8 +67,8 @@ client.on("messageReactionRemove", (reaction, user) => roleReact(reaction, user,
 async function roleReact(reaction, user, add) {
     const msg = reaction.message;
     const member = msg.guild.member(user);
-    if (msg.author.id === client.user.id) {
-        if (user.id === client.user.id) return;
+    if ([client.user.id, '511854724082040834'].includes(msg.author.id)) {
+        if ([client.user.id, '511854724082040834'].includes(user.id)) return;
         if (member.roles.has('490871287082778624') && member.roles.size === 2) return;
         const roleName = msg.content.match(re)[1];
         const role = msg.guild.roles.find(r => r.name.trim().toLowerCase() === roleName.trim().toLowerCase());
