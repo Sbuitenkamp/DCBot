@@ -72,7 +72,6 @@ async function roleReact(reaction, user, add) {
         if (member.roles.has('490871287082778624') && member.roles.size === 2) return;
         const roleName = msg.content.match(re)[1];
         const role = msg.guild.roles.find(r => r.name.trim().toLowerCase() === roleName.trim().toLowerCase());
-        console.log(member);
         if (add) await member.addRole(role);
         else await member.removeRole(role);
     }
