@@ -16,13 +16,6 @@ const roles = {
 };
 const re = `\\*\\*"(.+)?(?="\\*\\*)`;
 client.login(token);
-client.once("ready", () => {
-    client.user.setPresence({
-        status: 'online',
-        game: { name: `for role reactions`, type: "WATCHING" }
-    });
-    console.log('ShadBot up and running. \nTime 2 gib roles.');
-});
 client.on("error", error => {
     const embed = new RichEmbed()
         .setTitle('Error')
