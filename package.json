@@ -6,9 +6,7 @@
   "author": "Shadew",
   "dependencies": {
     "discord.js": "github:discordjs/discord.js#11.4-dev",
-    "npm": "^6.4.1",
-    "sequelize": "^4.39.0",
-    "sqlite3": "^4.0.2"
+    "npm": "^6.4.1"
   },
   "scripts": {
     "start": "bot.js"
