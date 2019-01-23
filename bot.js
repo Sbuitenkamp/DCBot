@@ -57,8 +57,10 @@ client.on("message", async message => {
  V
 `.trim());
     for (const key in roles) {
-        const message = await roleChannel.send(`Click here to get access to the **"${key}"** channels.`);
-        await message.react(client.emojis.get(roles[key]));
+        setTimeout(async () => {
+            const message = await roleChannel.send(`Click here to get access to the **"${key}"** channels.`);
+            await message.react(client.emojis.get(roles[key]));
+        }, 1000);
     }
 });
 async function roleReact(reaction, user, add) {
