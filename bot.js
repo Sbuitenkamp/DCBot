@@ -16,6 +16,7 @@ const roles = {
 };
 const re = `\\*\\*"(.+)?(?="\\*\\*)`;
 client.login(token);
+client.once("ready", () => console.log('RoleReact working'));
 client.on("error", error => {
     const embed = new RichEmbed()
         .setTitle('Error')
@@ -60,15 +61,16 @@ client.on("message", async message => {
         await message.react(client.emojis.get(roles[key]));
     }
 });
-function roleReact(reaction, user, add) {
+async function roleReact(reaction, user, add) {
     const msg = reaction.message;
-    const member = reaction.message.member;
+    const member = msg.guild.member(user);
     if (msg.author.id === client.user.id) {
         if (user.id === client.user.id) return;
         if (member.roles.has('490871287082778624') && member.roles.size === 2) return;
         const roleName = msg.content.match(re)[1];
         const role = msg.guild.roles.find(r => r.name.trim().toLowerCase() === roleName.trim().toLowerCase());
-        if (add) member.addRole(role);
-        else member.removeRole(role);
+        console.log(member);
+        if (add) await member.addRole(role);
+        else await member.removeRole(role);
     }
 }
