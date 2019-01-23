@@ -48,7 +48,8 @@ client.on("raw", packet  => {
 client.on("messageReactionAdd", (reaction, user) => roleReact(reaction, user, true));
 client.on("messageReactionRemove", (reaction, user) => roleReact(reaction, user, false));
 client.on("message", async message => {
-    if (message.content !== `${message.guild.me} init` && message.member.id === '174952948516782081') return;
+    if (message.author.bot) return;
+    if (message.content !== `${message.guild.me} init` && message.member.id !== '174952948516782081') return;
     const roleChannel = message.guild.channels.get(roleAssignId);
     await roleChannel.send(`
  Click on the emojis below to get the role associated to that emoji (if you don't see emojis go to settings->Text & Images-> and make sure "Show emoji reactions on messages." is checked!)
