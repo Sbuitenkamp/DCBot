@@ -5,7 +5,7 @@
   "main": "bot.js",
   "author": "Shadew",
   "dependencies": {
-    "discord.js": "github:discordjs/discord.js#11.4-dev",
+    "discord.js": "github:discordjs/discord.js",
     "npm": "^6.4.1"
   },
   "scripts": {
