@@ -1,3 +1,2 @@
 # DCBot
-Bot for my discord server
-https://discord.gg/RXtgwTk
+Bot for my discord server that once worked but has since been abandoned
